@@ -1,0 +1,418 @@
+;IR code
+;tiny code
+str input "Please input an integer number: "
+str space " "
+str eol "\n"
+push
+push r0
+push r1
+push r2
+push r3
+jsr main
+sys halt
+;LABEL F    liveList: $P1  
+label f
+;LINK     liveList: $P1  
+link 16
+;STOREI 2 $T1    liveList: $P1  $T1 
+;assigned $T1 to r3
+move 2 r3
+;LE $P1 $T1 label2    liveList: $P1  
+;putting $P1 in r2
+move $6 r2
+cmpi r2 r3
+jle label2
+;spilling r3 to $T1
+move r3 $-3
+;Freeing $T1 from 3
+;PUSH     liveList: $P1 
+push 
+;STOREI 1 $T2    liveList: $P1 $T2 
+;assigned $T2 to r3
+move 1 r3
+;SUBI $P1 $T2 $T3    liveList: $P1 $T3 
+;assigned $T3 to r1
+move r2 r1
+subi r3 r1
+;spilling r3 to $T2
+move r3 $-4
+;Freeing $T2 from 3
+;PUSH $T3     liveList: $P1 
+push r1
+;spilling r1 to $T3
+move r1 $-5
+;Freeing $T3 from 1
+;JSR F    liveList: $P1 
+;spilling all
+;checking if occupied: r0:
+;checking if occupied: r1:
+;checking if occupied: r2:$P1
+;spilling r2 to $P1
+move r2 $6
+;checking if occupied: r3:
+push r0
+push r1
+push r2
+push r3
+jsr f
+pop r3
+pop r2
+pop r1
+pop r0
+;POP     liveList: $P1  
+pop 
+;POP $T4     liveList: $P1  $T4 
+;assigned $T4 to r3
+pop r3
+;STOREI $T4 $L1    liveList: $L1 $P1  
+;assigned $L1 to r2
+move r3 r2
+;spilling r3 to $T4
+move r3 $-6
+;Freeing $T4 from 3
+;PUSH     liveList: $L1 $P1 
+push 
+;STOREI 2 $T5    liveList: $L1 $P1 $T5 
+;assigned $T5 to r3
+move 2 r3
+;SUBI $P1 $T5 $T6    liveList: $L1 $T6 
+;putting $P1 in r1
+move $6 r1
+;assigned $T6 to r0
+move r1 r0
+subi r3 r0
+;Freeing $P1 from 1
+;spilling r3 to $T5
+move r3 $-7
+;Freeing $T5 from 3
+;PUSH $T6     liveList: $L1 
+push r0
+;spilling r0 to $T6
+move r0 $-8
+;Freeing $T6 from 0
+;JSR F    liveList: $L1 
+;spilling all
+;checking if occupied: r0:
+;checking if occupied: r1:
+;checking if occupied: r2:$L1
+;spilling r2 to $L1
+move r2 $-1
+;checking if occupied: r3:
+push r0
+push r1
+push r2
+push r3
+jsr f
+pop r3
+pop r2
+pop r1
+pop r0
+;POP     liveList:  $L1 
+pop 
+;POP $T7     liveList:  $L1 $T7 
+;assigned $T7 to r3
+pop r3
+;STOREI $T7 $L2    liveList:  $L1 $L2 
+;assigned $L2 to r2
+move r3 r2
+;spilling r3 to $T7
+move r3 $-9
+;Freeing $T7 from 3
+;ADDI $L1 $L2 $T8    liveList:  $T8 
+;putting $L1 in r3
+move $-1 r3
+;assigned $T8 to r1
+move r3 r1
+addi r2 r1
+;spilling r2 to $L2
+move r2 $-2
+;Freeing $L2 from 2
+;Freeing $L1 from 3
+;STOREI $T8 $R    liveList:  
+move r1 $7
+;spilling r1 to $T8
+move r1 $-10
+;Freeing $T8 from 1
+;RET     liveList:  
+unlnk
+ret
+;SPILL     liveList: 
+;spilling all
+;checking if occupied: r0:
+;checking if occupied: r1:
+;checking if occupied: r2:
+;checking if occupied: r3:
+;JUMP label1    liveList:  $P1 
+jmp label1
+;LABEL label2    liveList:  $P1 
+label label2
+;STOREI 0 $T9    liveList:  $P1 $T9 
+;assigned $T9 to r3
+move 0 r3
+;NE $P1 $T9 label3    liveList:  
+;spilling all
+;checking if occupied: r0:
+;checking if occupied: r1:
+;checking if occupied: r2:
+;checking if occupied: r3:$T9
+;spilling r3 to $T9
+move r3 $-11
+;putting $P1 in r3
+move $6 r3
+;putting $T9 in r2
+move $-11 r2
+cmpi r3 r2
+jne label3
+;Freeing $T9 from 2
+;Freeing $P1 from 3
+;STOREI 0 $T10    liveList:  $T10 
+;assigned $T10 to r3
+move 0 r3
+;STOREI $T10 $R    liveList:  
+move r3 $7
+;spilling r3 to $T10
+move r3 $-12
+;Freeing $T10 from 3
+;RET     liveList:  
+unlnk
+ret
+;SPILL     liveList: 
+;spilling all
+;checking if occupied: r0:
+;checking if occupied: r1:
+;checking if occupied: r2:
+;checking if occupied: r3:
+;JUMP label1    liveList:  $P1 
+jmp label1
+;LABEL label3    liveList:  $P1 
+label label3
+;STOREI 1 $T11    liveList:  $P1 $T11 
+;assigned $T11 to r3
+move 1 r3
+;NE $P1 $T11 label4    liveList:  
+;spilling all
+;checking if occupied: r0:
+;checking if occupied: r1:
+;checking if occupied: r2:
+;checking if occupied: r3:$T11
+;spilling r3 to $T11
+move r3 $-13
+;putting $P1 in r3
+move $6 r3
+;putting $T11 in r2
+move $-13 r2
+cmpi r3 r2
+jne label4
+;Freeing $T11 from 2
+;Freeing $P1 from 3
+;STOREI 1 $T12    liveList:  $T12 
+;assigned $T12 to r3
+move 1 r3
+;STOREI $T12 $R    liveList:  
+move r3 $7
+;spilling r3 to $T12
+move r3 $-14
+;Freeing $T12 from 3
+;RET     liveList:  
+unlnk
+ret
+;SPILL     liveList: 
+;spilling all
+;checking if occupied: r0:
+;checking if occupied: r1:
+;checking if occupied: r2:
+;checking if occupied: r3:
+;JUMP label1    liveList:  $P1 
+jmp label1
+;LABEL label4    liveList:  $P1 
+label label4
+;STOREI 2 $T13    liveList:  $P1 $T13 
+;assigned $T13 to r3
+move 2 r3
+;NE $P1 $T13 label5    liveList:  
+;spilling all
+;checking if occupied: r0:
+;checking if occupied: r1:
+;checking if occupied: r2:
+;checking if occupied: r3:$T13
+;spilling r3 to $T13
+move r3 $-15
+;putting $P1 in r3
+move $6 r3
+;putting $T13 in r2
+move $-15 r2
+cmpi r3 r2
+jne label5
+;Freeing $T13 from 2
+;Freeing $P1 from 3
+;STOREI 1 $T14    liveList:  $T14 
+;assigned $T14 to r3
+move 1 r3
+;STOREI $T14 $R    liveList:  
+move r3 $7
+;spilling r3 to $T14
+move r3 $-16
+;Freeing $T14 from 3
+;RET     liveList:  
+unlnk
+ret
+;SPILL     liveList: 
+;spilling all
+;checking if occupied: r0:
+;checking if occupied: r1:
+;checking if occupied: r2:
+;checking if occupied: r3:
+;JUMP label1    liveList: 
+jmp label1
+;LABEL label5    liveList: 
+label label5
+;LABEL label1    liveList: 
+;spilling all
+;checking if occupied: r0:
+;checking if occupied: r1:
+;checking if occupied: r2:
+;checking if occupied: r3:
+label label1
+;SPILL     liveList: 
+;spilling all
+;checking if occupied: r0:
+;checking if occupied: r1:
+;checking if occupied: r2:
+;checking if occupied: r3:
+;LABEL main    liveList: eol space  input 
+label main
+;LINK     liveList: eol space  input 
+link 8
+;STOREI 0 $T1    liveList: eol space  input $T1 
+;assigned $T1 to r3
+move 0 r3
+;STOREI $T1 $L1    liveList: $L1 eol space  input 
+;assigned $L1 to r2
+move r3 r2
+;spilling r3 to $T1
+move r3 $-4
+;Freeing $T1 from 3
+;WRITES input    liveList: $L1 eol space  
+sys writes input
+;READI $L2    liveList: $L2 $L1 eol space  
+;assigned $L2 to r3
+sys readi r3
+;LABEL label6    liveList: $L2 $L1 eol space  
+;spilling all
+;checking if occupied: r0:
+;checking if occupied: r1:
+;checking if occupied: r2:$L1
+;spilling r2 to $L1
+move r2 $-1
+;checking if occupied: r3:$L2
+;spilling r3 to $L2
+move r3 $-2
+label label6
+;PUSH     liveList: $L2 $L1 eol space 
+push 
+;PUSH $L1     liveList: $L2 $L1 eol space 
+;putting $L1 in r3
+move $-1 r3
+push r3
+;JSR F    liveList: $L2 $L1 eol space 
+;spilling all
+;checking if occupied: r0:
+;checking if occupied: r1:
+;checking if occupied: r2:$L1
+;checking if occupied: r3:$L1
+;spilling r3 to $L1
+move r3 $-1
+push r0
+push r1
+push r2
+push r3
+jsr f
+pop r3
+pop r2
+pop r1
+pop r0
+;POP     liveList:  $L2 $L1 eol space 
+pop 
+;POP $T2     liveList:  $L2 $L1 eol space $T2 
+;assigned $T2 to r3
+pop r3
+;STOREI $T2 $L3    liveList:  $L2 $L1 eol $L3 space 
+;assigned $L3 to r2
+move r3 r2
+;spilling r3 to $T2
+move r3 $-5
+;Freeing $T2 from 3
+;WRITEI $L1    liveList:  $L2 $L1 eol $L3 space 
+;putting $L1 in r3
+move $-1 r3
+sys writei r3
+;WRITES space    liveList:  $L2 $L1 eol $L3 
+sys writes space
+;WRITEI $L3    liveList:  $L2 $L1 eol 
+sys writei r2
+;spilling r2 to $L3
+move r2 $-3
+;Freeing $L3 from 2
+;WRITES eol    liveList:  $L2 $L1 
+sys writes eol
+;STOREI 1 $T3    liveList:  $L2 $L1 $T3 
+;assigned $T3 to r2
+move 1 r2
+;ADDI $L1 $T3 $T4    liveList:  $L2 $T4 
+;assigned $T4 to r1
+move r3 r1
+addi r2 r1
+;spilling r2 to $T3
+move r2 $-6
+;Freeing $T3 from 2
+;Freeing $L1 from 3
+;STOREI $T4 $L1    liveList:  $L1 $L2 
+;assigned $L1 to r3
+move r1 r3
+;spilling r1 to $T4
+move r1 $-7
+;Freeing $T4 from 1
+;EQ $L1 $L2 label7    liveList: 
+;spilling all
+;checking if occupied: r0:
+;checking if occupied: r1:
+;checking if occupied: r2:
+;checking if occupied: r3:$L1
+;spilling r3 to $L1
+move r3 $-1
+;putting $L1 in r3
+move $-1 r3
+;putting $L2 in r2
+move $-2 r2
+cmpi r3 r2
+jeq label7
+;Freeing $L2 from 2
+;Freeing $L1 from 3
+;JUMP label6    liveList:  
+jmp label6
+;LABEL label7    liveList:  
+label label7
+;SPILL     liveList: 
+;spilling all
+;checking if occupied: r0:
+;checking if occupied: r1:
+;checking if occupied: r2:
+;checking if occupied: r3:
+;STOREI 0 $T5    liveList: $T5 
+;assigned $T5 to r3
+move 0 r3
+;STOREI $T5 $R    liveList: 
+move r3 $6
+;spilling r3 to $T5
+move r3 $-8
+;Freeing $T5 from 3
+;RET     liveList: 
+unlnk
+ret
+;SPILL     liveList: 
+;spilling all
+;checking if occupied: r0:
+;checking if occupied: r1:
+;checking if occupied: r2:
+;checking if occupied: r3:
+end

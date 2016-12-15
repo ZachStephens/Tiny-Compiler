@@ -1,0 +1,17 @@
+import java.io.*;
+import java.util.*;
+
+
+public class RegManager{
+    private static  ArrayList<String> reglist= new ArrayList<String>();
+
+    public static String addRegister(String type){
+	reglist.add(type);
+	return "$T"+Integer.toString(reglist.size());
+    }
+
+    public static String getType(String regname){
+	return reglist.get(Integer.parseInt(regname.substring(2))-1);
+    }
+
+}

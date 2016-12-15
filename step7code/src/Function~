@@ -1,0 +1,15 @@
+import java.io.*;
+import java.util.*;
+
+
+
+public  class Function{
+    private Stack<Function> FunctionStack = new Stack<String>();
+    private LinkedHashMap<String,symbol> scopeMap;
+    private ; 
+    
+    public Function(String name){
+	this.scopeName = name;
+	this.scopeMap = new LinkedHashMap<String,symbol>();
+    }
+}

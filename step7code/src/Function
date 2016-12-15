@@ -1,0 +1,27 @@
+import java.io.*;
+import java.util.*;
+
+
+
+public class Function{
+private Stack<String> ParamStack = new Stack<String>();
+private LinkedHashMap<String,symbol> scopeMap;
+private Integer param_num; 
+private String name;
+
+
+public Function(String name){
+this.name = name;
+this.scopeMap = new LinkedHashMap<String,symbol>();
+}
+
+public incrementParam(){
+param_num++;
+}
+
+public addParams(String type, String id){
+
+}
+
+
+}

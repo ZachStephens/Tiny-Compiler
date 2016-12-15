@@ -1,0 +1,15 @@
+import java.util.ArrayList;
+import java.io.*;
+import java.util.*;
+
+
+public class FlowNode extends IRnode{
+
+
+
+    public FlowNode(){
+	
+	
+    }
+
+}

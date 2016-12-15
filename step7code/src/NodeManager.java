@@ -1,0 +1,343 @@
+import java.io.*;
+import java.util.*;
+
+
+public class NodeManager{
+    private static Stack<String> opStack = new Stack<String>(); 
+    private static Stack<String> labelStack = new Stack<String>();
+    public static ArrayList<Function> FunctionStack = new ArrayList<Function>();
+    public static ArrayList<Function> FList = new ArrayList<Function>();
+    public static Integer labelNum = 0;
+    public static String callName = "";
+    
+    public static void addExpressions(String op){
+	String first = opStack.pop();
+	String second = opStack.pop();
+	String opcode = "";
+	String result = "";
+	String optype = "";
+
+	if(op.equals("/"))
+	    opcode = "DIV";
+	else if(op.equals("*"))
+	    opcode = "MULT";	
+	else if(op.equals("+"))
+	    opcode = "ADD";	
+	else if (op.equals("-"))
+	    opcode = "SUB";
+	
+	if(first.contains(".")){
+	    optype = "F";
+	}
+	else if(first.matches("\\d+")){
+	    optype="I";
+
+	}else if(first.startsWith("$"))
+	    optype = RegManager.getType(first);
+
+	else{
+	    //  System.out.println(first);
+	    optype = symboltable.getType(first).substring(0,1);
+	    
+	}
+
+
+
+
+	opcode.concat(optype);
+	
+	//	System.out.println("test: "+optype+" "+opcode+" "+first);
+
+	result = RegManager.addRegister(optype);
+	opStack.push(result);
+
+	second = FList.get(FList.size()-1).getReg(second);
+	first = FList.get(FList.size()-1).getReg(first);
+	IRnode node1 = new IRnode(opcode+optype,second,first,result);
+	IRnodelist.Addnode(node1);
+	
+    }
+    
+
+    public static void newAssignment(){
+
+	String leftside = opStack.pop();
+	//	System.out.println(leftside);
+	String first = opStack.pop();
+	String optype = "";
+	
+	if(first.contains(".")){
+	    optype = "F";
+	}
+	else if(first.matches("\\d+")){
+	    optype="I";
+
+	}else if(first.startsWith("$")){
+	    optype = RegManager.getType(first);	    
+	}
+	else{
+	    optype = symboltable.getType(first);
+	    optype.substring(0,1);
+	}
+	
+	first = FList.get(FList.size()-1).getReg(first);
+	leftside =FList.get(FList.size()-1).getReg(leftside);
+	IRnodelist.Addnode(new IRnode("STORE"+optype,first,"",leftside));
+    }
+    
+    public static void pushID(String id){
+	// result for assignment
+	opStack.push(id);
+    }
+
+    public static void pushLiteral(String literal){
+	String optype = "";
+	String result = "";
+	if(literal.contains("."))
+	    optype = "F";
+	else
+	    optype="I";
+	
+	result = RegManager.addRegister(optype);
+	//	System.out.println(literal+" is put into "+result);
+	IRnodelist.Addnode(new IRnode("STORE"+optype,literal,"",result));
+	opStack.push(result);
+    }
+
+    public static void addREAD(String idlist){
+	String[] idarray = idlist.split(",");
+	int i = 0;
+	String optype = "";
+	//	System.out.println("is blocked: "+symboltable.is_AddBlock);
+	for(i=0;i<idarray.length;i++){
+	    //symboltable.printTable();
+	    //System.out.println("idlist: "+idlist+" \n"+idarray[i]);
+	    optype = symboltable.getType(idarray[i]);
+	    IRnodelist.Addnode(new IRnode("READ"+optype.substring(0,1),"","",FList.get(FList.size()-1).getReg(idarray[i])));
+	}
+    }
+    public static void addWRITE(String idlist){
+	//	System.out.println("is blocked: "+symboltable.is_AddBlock);
+	String[] idarray = idlist.split(",");
+	int i = 0;
+	String optype = "";
+	for(i=0;i<idarray.length;i++){
+	    optype = symboltable.getType(idarray[i]);
+	    IRnodelist.Addnode(new IRnode("WRITE"+optype.substring(0,1),"","",FList.get(FList.size()-1).getReg(idarray[i])));
+	}
+    }
+
+
+    public static void addConditional(String operator){
+	String opcode = "";
+	String op1 = opStack.pop();
+	String op2 = opStack.pop();
+	String label = topLabel();
+	if(operator.matches("<")){
+	    opcode = "GE";
+	}else if(operator.matches(">")){
+	    opcode = "LE";
+	}else if(operator.matches("=")){
+	    opcode = "NE";
+	}else if(operator.matches("!=")){
+	    opcode = "EQ";
+	}else if(operator.matches("<=")){
+	    opcode = "GT";
+	}else if(operator.matches(">=")){
+	    opcode = "LT";
+	}else if(operator.matches(">")){
+	    opcode = "LE";
+	}
+
+	op1 = FList.get(FList.size()-1).getReg(op1);
+	op2 = FList.get(FList.size()-1).getReg(op2);
+
+	IRnode node1 = new IRnode(opcode,op2,op1,label);
+	IRnodelist.Addnode(node1);
+    }
+
+    public static void handleTrue(){
+	String temp1 = RegManager.addRegister("I");
+	String temp2 = RegManager.addRegister("I");
+	IRnodelist.Addnode(new IRnode("STOREI","1","",temp1));
+	IRnodelist.Addnode(new IRnode("STOREI","1","",temp2));	
+	IRnode node1 = new IRnode("NE",temp1,temp2,topLabel());
+	IRnodelist.Addnode(node1);
+    }
+
+    public static void handleFalse(){
+	String temp1 = RegManager.addRegister("I");
+	String temp2 = RegManager.addRegister("I");
+	IRnodelist.Addnode(new IRnode("STOREI","1","",temp1));
+	IRnodelist.Addnode(new IRnode("STOREI","0","",temp2));	
+	IRnode node1 = new IRnode("NE",temp1,temp2,topLabel());
+	IRnodelist.Addnode(node1);
+    }
+
+    public static void addJump(String label){
+	IRnodelist.Addnode(new IRnode("JUMP","","",label));
+    }
+
+    public static void pushLabel(){
+	labelNum++;
+	labelStack.push("label"+Integer.toString(labelNum));
+    }
+    
+    public static String popLabel(){
+	return labelStack.pop();
+	
+    }
+
+    public static String topLabel(){
+	return labelStack.peek();
+
+    }
+
+    public static String SecondLabel(){
+	String s1 = labelStack.pop();
+	String s2 = labelStack.peek();
+	labelStack.push(s1);
+	return s2;
+
+    }
+
+    public static void addReturn(){
+	String first = opStack.pop();
+	String optype = "";
+	if(first.contains(".")){
+	    optype = "F";
+	}
+	else if(first.matches("\\d+")){
+	    optype="I";
+
+	}else if(first.startsWith("$"))
+	    optype = RegManager.getType(first);
+
+	else{
+	    optype = symboltable.getType(first).substring(0,1);
+	}
+
+	first= FList.get(FList.size()-1).getReg(first);
+	IRnodelist.Addnode(new IRnode("STORE"+optype,first,"","$R"));
+	
+	IRnodelist.Addnode(new IRnode("RET","","",""));
+    }
+
+    public static void addLabel(String label){
+	IRnodelist.Addnode(new IRnode("LABEL","","",label));
+    }
+
+    public static void addLink(){
+	IRnodelist.Addnode(new IRnode("LINK","","",""));
+    }
+    
+    public static void declareFunction(String name,String type){
+	FList.add(new Function(name,type));	
+	FunctionStack.add(new Function(name,type));
+	
+    }
+
+    public static void addParam(String id, String type){
+	//().addParam(first,optype);
+	//	System.out.println("declare "+id);
+	topFunction().addParam(id,type);
+	FStack(topFunction().name).addParam(id,type);
+    }
+
+
+    public static void addFunction(String name){
+	//make instance of name 
+	Function F1 = null;
+	int i = 0;
+
+	for(i=0;i<FList.size();i++){
+	    if(FList.get(i).name.equals(name))
+		{
+		    F1 = new Function(name,FList.get(i).returntype);
+		    break;
+		}	    
+	}
+
+	FList.add(F1);
+	IRnodelist.Addnode(new IRnode("PUSH","","",""));
+    }
+
+    public static Function topFunction(){
+	return FList.get(FList.size()-1); 
+    }
+
+    public static Function FStack(String s1){
+	int i = 0;
+	Function F2;
+	for(i=0;i<FunctionStack.size();i++)
+	    {
+		F2 = FunctionStack.get(i);
+		if(F2.name.equals(s1))
+		    {
+			return F2;
+		    }
+		    
+	    }
+	return null;
+    }
+
+
+    public static void addLocal(String id, String type){
+	FList.get(FList.size()-1).addLocal(id,type);	
+    }
+
+
+    public static void addTopParam(){
+	String first = opStack.pop();
+	String optype = "";
+	Function F1 = FStack(callName);
+	if(first.contains(".")){
+	    optype = "F";
+	}
+	else if(first.matches("\\d+")){
+	    optype="I";
+
+	}else if(first.startsWith("$"))
+	    optype = RegManager.getType(first);
+
+	else{
+	    //System.out.println("top funciton: "+ topFunction().name);
+	    optype = symboltable.getType(first).substring(0,1);
+	}
+
+	int i  = 0;
+	
+	//F1.addParam(first,optype);
+	//System.out.println(first+"in topFunction");
+	first =topFunction().getReg(first);
+	IRnodelist.Addnode(new IRnode("PUSH",first,"",""));
+
+	
+    }
+
+
+    public static void addCall(String name){
+	callName = name;
+	Function F1 = FStack(name);
+	String result = "";
+	//add JSR node
+	IRnodelist.Addnode(new IRnode("JSR","","",name));
+       
+	int i = F1.param_num;
+	//	System.out.println(F1.name+" paramnum"+i);
+	for(i = 0;i<F1.param_num;i++){
+	    	IRnodelist.Addnode(new IRnode("POP","","",""));
+	}
+
+	//	System.out.println("TF is: "+topFunction().name);
+	result = RegManager.addRegister(F1.returntype.substring(0,1));
+	opStack.push(result);
+
+	
+	IRnodelist.Addnode(new IRnode("POP",result,"",""));
+	//opStack.push(ret);
+	//push parameters
+    }
+    
+
+}

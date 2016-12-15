@@ -1,0 +1,284 @@
+Tiny size is :4
+;IR code
+;tiny code
+str input "Please enter an integer number: "
+str eol "\n"
+push
+push r0
+push r1
+push r2
+push r3
+jsr main
+sys halt
+;LABEL factorial    liveList: $L1  $P1 
+label factorial
+;LINK     liveList: $L1  $P1 
+link 10
+;STOREI 1 $T1    liveList: $L1  $P1 $T1 
+;assigned $T1 to r3
+move 1 r3
+;NE $P1 $T1 label2    liveList: $L1  
+;putting $P1 in r2
+move $6 r2
+cmpi r2 r3
+jne label2
+;Freeing $P1 from 2
+;spilling r3 to $T1
+move r3 $-3
+;Freeing $T1 from 3
+;spilling all
+;STOREI 1 $T2    liveList: $L1  $T2 
+;assigned $T2 to r3
+move 1 r3
+;STOREI $T2 $R    liveList: $L1  
+move  $7
+;spilling r3 to $T2
+move r3 $-4
+;Freeing $T2 from 3
+;RET     liveList: $L1  
+unlnk
+ret
+;SPILL     liveList: $L1 
+;spilling all
+;JUMP label1    liveList: $P1  $L1 
+jmp label1
+;LABEL label2    liveList: $P1  $L1 
+label label2
+;STOREI 1 $T3    liveList: $P1  $L1 $T3 
+;assigned $T3 to r3
+move 1 r3
+;STOREI 1 $T4    liveList: $P1  $L1 $T3 $T4 
+;assigned $T4 to r2
+move 1 r2
+;NE $T3 $T4 label3    liveList: $P1  
+cmpi r3 r2
+jne label3
+;spilling r2 to $T4
+move r2 $-6
+;Freeing $T4 from 2
+;spilling r3 to $T3
+move r3 $-5
+;Freeing $T3 from 3
+;spilling all
+;PUSH     liveList: $P1 
+push r0
+;STOREI 1 $T5    liveList: $P1 $T5 
+;assigned $T5 to r3
+move 1 r3
+;SUBI $P1 $T5 $T6    liveList: $P1 $T6 
+;putting $P1 in r2
+move $6 r2
+;assigned $T6 to r1
+move r2 r1
+subi r3 r1
+;spilling r3 to $T5
+move r3 $-7
+;Freeing $T5 from 3
+;PUSH $T6     liveList: $P1 
+push r1
+;spilling r1 to $T6
+move r1 $-8
+;Freeing $T6 from 1
+;JSR factorial    liveList: $P1 
+;spilling all
+;spilling r2 to $P1
+move r2 $6
+push r0
+push r1
+push r2
+push r3
+jsr factorial
+pop r3
+pop r2
+pop r1
+pop r0
+;POP     liveList:  $P1 
+pop r0
+;POP $T7     liveList:  $P1 $T7 
+;assigned $T7 to r3
+pop r3
+;STOREI $T7 $L2    liveList:  $L2 $P1 
+;assigned $L2 to r1
+move r3 r1
+;spilling r3 to $T7
+move r3 $-9
+;Freeing $T7 from 3
+;MULTI $L2 $P1 $T8    liveList:  $T8 
+;assigned $T8 to r3
+move r1 r3
+muli r2 r3
+;spilling r1 to $L2
+move r1 $-2
+;Freeing $L2 from 1
+;Freeing $P1 from 2
+;STOREI $T8 $L1    liveList: $L1  
+;assigned $L1 to r2
+move r3 r2
+;spilling r3 to $T8
+move r3 $-10
+;Freeing $T8 from 3
+;SPILL     liveList: $L1 
+;spilling all
+;spilling r2 to $L1
+move r2 $-1
+;JUMP label1    liveList: $L1 
+jmp label1
+;LABEL label3    liveList: $L1 
+label label3
+;LABEL label1    liveList: $L1 
+label label1
+;spilling all
+;spilling r2 to $L1
+move r2 $-1
+;STOREI $L1 $R    liveList: 
+move  $7
+;Freeing $L1 from 2
+;RET     liveList: 
+unlnk
+ret
+;SPILL     liveList: 
+;spilling all
+;LABEL main    liveList: eol  input 
+label main
+;LINK     liveList: eol  input 
+link 10
+;WRITES input    liveList: eol  
+sys writes input
+;READI $L1    liveList: eol  $L1 
+;assigned $L1 to r3
+sys readi r3
+;STOREI 1 $T1    liveList: eol  $L1 $T1 
+;assigned $T1 to r2
+move 1 r2
+;NE $L1 $T1 label5    liveList: eol  
+cmpi r3 r2
+jne label5
+;spilling r2 to $T1
+move r2 $-3
+;Freeing $T1 from 2
+;spilling r3 to $L1
+move r3 $-1
+;Freeing $L1 from 3
+;spilling all
+;STOREI 1 $T2    liveList: eol  $T2 
+;assigned $T2 to r3
+move 1 r3
+;STOREI $T2 $L2    liveList: eol $L2  
+;assigned $L2 to r2
+move r3 r2
+;spilling r3 to $T2
+move r3 $-4
+;Freeing $T2 from 3
+;SPILL     liveList: eol $L2 
+;spilling all
+;spilling r2 to $L2
+move r2 $-2
+;JUMP label4    liveList: eol $L1  
+jmp label4
+;Freeing $L2 from 2
+;LABEL label5    liveList: eol $L1  
+label label5
+;STOREI 1 $T3    liveList: eol $L1  $T3 
+;assigned $T3 to r3
+move 1 r3
+;LE $L1 $T3 label6    liveList: eol $L1  
+;putting $L1 in r2
+move $-1 r2
+cmpi r2 r3
+jle label6
+;spilling r3 to $T3
+move r3 $-5
+;Freeing $T3 from 3
+;PUSH     liveList: eol $L1 
+push r0
+;PUSH $L1     liveList: eol 
+push r2
+;Freeing $L1 from 2
+;JSR factorial    liveList: eol 
+;spilling all
+push r0
+push r1
+push r2
+push r3
+jsr factorial
+pop r3
+pop r2
+pop r1
+pop r0
+;POP     liveList: eol  
+pop r0
+;POP $T4     liveList: eol  $T4 
+;assigned $T4 to r3
+pop r3
+;STOREI $T4 $L2    liveList: eol $L2  
+;assigned $L2 to r2
+move r3 r2
+;spilling r3 to $T4
+move r3 $-6
+;Freeing $T4 from 3
+;SPILL     liveList: eol $L2 
+;spilling all
+;spilling r2 to $L2
+move r2 $-2
+;JUMP label4    liveList: eol  $L2 
+jmp label4
+;LABEL label6    liveList: eol  $L2 
+label label6
+;STOREI 1 $T5    liveList: eol  $L2 $T5 
+;assigned $T5 to r3
+move 1 r3
+;STOREI 1 $T6    liveList: eol  $L2 $T5 $T6 
+;assigned $T6 to r1
+move 1 r1
+;NE $T5 $T6 label7    liveList: eol  
+cmpi r3 r1
+jne label7
+;spilling r1 to $T6
+move r1 $-8
+;Freeing $T6 from 1
+;Freeing $L2 from 2
+;spilling r3 to $T5
+move r3 $-7
+;Freeing $T5 from 3
+;spilling all
+;STOREI 0 $T7    liveList: eol  $T7 
+;assigned $T7 to r3
+move 0 r3
+;STOREI $T7 $L2    liveList: eol $L2  
+;assigned $L2 to r2
+move r3 r2
+;spilling r3 to $T7
+move r3 $-9
+;Freeing $T7 from 3
+;SPILL     liveList: eol $L2 
+;spilling all
+;spilling r2 to $L2
+move r2 $-2
+;JUMP label4    liveList: eol $L2 
+jmp label4
+;LABEL label7    liveList: eol $L2 
+label label7
+;LABEL label4    liveList: eol $L2 
+label label4
+;spilling all
+;spilling r2 to $L2
+move r2 $-2
+;WRITEI $L2    liveList: eol 
+sys writei r2
+;Freeing $L2 from 2
+;WRITES eol    liveList: 
+sys writes eol
+;STOREI 0 $T8    liveList: $T8 
+;assigned $T8 to r3
+move 0 r3
+;STOREI $T8 $R    liveList: 
+move  $6
+;spilling r3 to $T8
+move r3 $-10
+;Freeing $T8 from 3
+;RET     liveList: 
+unlnk
+ret
+;SPILL     liveList: 
+;spilling all
+end

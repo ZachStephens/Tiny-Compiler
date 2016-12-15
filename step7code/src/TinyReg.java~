@@ -1,0 +1,19 @@
+import java.util.ArrayList;
+import java.io.*;
+import java.util.*;
+
+
+public class TinyReg{
+
+    public String contents;
+    public boolean dirty;
+
+
+    public TinyReg(){
+	contents = "";
+	dirty = false;
+    }
+
+    
+
+}
